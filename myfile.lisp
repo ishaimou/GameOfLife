@@ -1,0 +1,38 @@
+(defparameter w 10)
+(defparameter h 10)
+(defparameter matrix nil)
+(defparameter density nil)
+(defparameter nb 0)
+
+(setq matrix (make-array (list w h) :initial-element 1))
+(setq density (make-array (list w h) :initial-element 0))
+
+(defun random-matrix ()
+   (dotimes (i h)
+     (dotimes (j w)
+       (setf (aref matrix i j) (random 2))))
+  matrix)
+
+(defun is-neighbor (i j)
+  (if (AND (>= i 0) (< i h) (>= j 0) (< j w))
+      (if (equal (aref matrix i j) 1) 1 0) 0))
+
+(defun get-neighbors (row column)
+  (setf nb 0)
+  (loop for i from (- row 1) to (+ row 1)
+         do (loop for j from (- column 1) to (+ column 1)
+                  do (setf nb (+ nb (is-neighbor i j)))))
+  (if (equal (aref matrix row column) 1)
+      (decf nb))
+  nb)
+
+(defun calculate-density ()
+  (dotimes (i h)
+    (dotimes (j w)
+      (setf (aref density i j) (get-neighbors i j))))
+  density)
+
+(setq matrix (random-matrix))
+(print matrix)
+(setq density (calculate-density))
+(print density)
