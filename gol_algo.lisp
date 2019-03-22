@@ -75,3 +75,8 @@
     (setq density (calculate-density))
     (setq matrix (update-matrix)))
 |#
+
+(defun gol-algo ()
+ (progn
+   (setq density (calculate-density))
+   (setq matrix (update-matrix))))
