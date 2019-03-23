@@ -53,11 +53,11 @@
   (setq matrix (make-array (list row column) :initial-element 0)))
 
 (defun calculate-v (bool)
-  (if (equal bool 'nil)
+  (if (equal bool 'true)
       (if (>= v 20)
-          (setf v (- v *speed*)))
+          (setf v (+ v *speed*)))
       (if (<= v 100)
-          (setf v (+ v *speed*)))))
+          (setf v (- v *speed*)))))
 
 (defun handle-key-event (key)
   (if (sdl:key= key :sdl-key-escape)
@@ -84,11 +84,28 @@
       )
   (if (sdl:key= key :sdl-key-r)
       (progn
-         (reset-matrix)
-         (setf p 1)))
+        (reset-matrix)
+        (setf p 1)))
   (if (sdl:key= key :sdl-key-p)
       (if (= p 1) (decf p) (incf p)))
   (print-matrix matrix row column bsize))
+
+(defun handle-mouse-event (button)
+  (if (= button 4) ; When down
+      (if (or (sdl:key-down-p :sdl-key-lshift)
+              (sdl:key-down-p :sdl-key-rshift))
+          (calculate-v 'nil) ; shifted
+          (zoom-out)))
+  (if (= button 5) ; When up
+      (if (or (sdl:key-down-p :sdl-key-lshift)
+              (sdl:key-down-p :sdl-key-rshift))
+          (calculate-v 'true) ; shifted
+          (zoom-in)))
+  (if (= button 1)
+      (progn
+        (setf last-x 0)
+        (setf last-y 0)))
+  )
 
 (defun mouse-event-handler ()
   (if (sdl:mouse-left-p)
@@ -101,35 +118,35 @@
                   (progn
                     (setf last-x (sdl:mouse-x))
                     (setf last-y (sdl:mouse-y)))
-                (progn
-                  (let*
+                  (progn
+                    (let*
                       ((x (sdl:mouse-x))
                        (y (sdl:mouse-y)))
-                    (setf xn (+ xn (- x last-x)))
-                    (setf yn (+ yn (- y last-y)))
-                    (setf last-x x)
-                    (setf last-y y)))))
-          (let ((i (floor (- (sdl:mouse-x) xn)
-                               bsize))
-                 (j (floor (- (sdl:mouse-y) yn)
-                               bsize)))
-            (if (equal (and (>= i 0)
-                           (< i row)
-                           (>= j 0)
-                           (< j column)) T)
-              (setf (aref matrix i j) 1))))))
+                      (setf xn (+ xn (- x last-x)))
+                      (setf yn (+ yn (- y last-y)))
+                      (setf last-x x)
+                      (setf last-y y)))))
+            (let ((i (floor (- (sdl:mouse-x) xn)
+                            bsize))
+                  (j (floor (- (sdl:mouse-y) yn)
+                            bsize)))
+              (if (equal (and (>= i 0)
+                              (< i row)
+                              (>= j 0)
+                              (< j column)) T)
+                  (setf (aref matrix i j) 1))))))
   (if (sdl:mouse-right-p)
       (let
-          ((i (floor (- (sdl:mouse-x) xn)
-                         bsize))
-           (j (floor (- (sdl:mouse-y) yn)
-                         bsize)))
+        ((i (floor (- (sdl:mouse-x) xn)
+                   bsize))
+         (j (floor (- (sdl:mouse-y) yn)
+                   bsize)))
         (if (equal (and (>= i 0)
-                       (< i row)     ; Global y
-                       (>= j 0)
-                       (< j column)) t) ; Global x
-          (setf (aref matrix i j)
-                0))))
+                        (< i row)     ; Global y
+                        (>= j 0)
+                        (< j column)) t) ; Global x
+            (setf (aref matrix i j)
+                  0))))
   (print-matrix matrix column row bsize))
 
 (defun gol-launcher ()
@@ -146,6 +163,8 @@
                                   ;; Redraw the screen when it has been modified outside (e.g window manager)
                                   (:video-expose-event ()
                                    (sdl:update-display))
+                                  (:mouse-button-up-event (:button button)
+                                   (handle-mouse-event button))
                                   (:key-down-event (:key key)
                                    (handle-key-event key))
                                   ;(when (sdl:key-down-p :sdl-key-escape)
