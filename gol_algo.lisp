@@ -1,9 +1,3 @@
-(defparameter row 200)
-(defparameter column 200)
-(defparameter matrix nil)
-(defparameter density nil)
-(defparameter nb 0)
-
 (setq matrix (make-array (list row column) :initial-element 0))
 #|
 (setq matrix #2A(
@@ -61,9 +55,9 @@
 (defun update-matrix ()
   (dotimes (i row)
     (dotimes (j column)
-      (if (rule1 i j) (setf (aref matrix i j) 0))
+      (if (rule1 i j) (setf (aref matrix i j) (if (equal *fingerprint* 1) 2 0)))
       (if (rule2 i j) (setf (aref matrix i j) 1))
-      (if (rule3 i j) (setf (aref matrix i j) 0))
+      (if (rule3 i j) (setf (aref matrix i j) (if (equal *fingerprint* 1) 2 0)))
       (if (rule4 i j) (setf (aref matrix i j) 1))))
   matrix)
 

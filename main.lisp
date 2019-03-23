@@ -1,0 +1,46 @@
+(ql:quickload :lispbuilder-sdl
+              :silent nil)
+
+(defparameter width 1000)
+(defparameter height 1000)
+(defparameter row 200)
+(defparameter column 200)
+(defparameter matrix nil)
+(defparameter density nil)
+(defparameter nb 0)
+(defparameter *toggle* 0)
+(defparameter *fingerprint* 0)
+(defparameter *step* 10)
+(defparameter *zoom* 2)
+(defparameter *speed* 5)
+(defparameter *max-zoom* 100)
+(defparameter *min-zoom* 2)
+(defparameter *white* sdl:*white*)
+(defparameter *black* sdl:*black*)
+(defparameter *gray* (sdl:color :r 128 :g 128 :b 128))
+(defparameter *red* (sdl:color :r 255 :g 160 :b 122))
+
+(defvar bsize 15)
+(defvar xn 0)
+(defvar yn 0)
+(defvar v 0)
+(defvar p 0)
+
+(load "parse_input.lisp")
+(load "gol_algo.lisp")
+(load "gol_sdl.lisp")
+
+
+(defun main (av)
+  (parse-input av)
+  ;(format t "~%toggle = ~d~%" *toggle*)
+  ;(format t "~%fingerprint = ~d~%" *fingerprint*)
+  ;(format t "~%row = ~d~%" row)
+  ;(format t "~%column= ~d~%" column)
+  (gol-launcher)
+  (sb-ext:exit)
+  )
+
+(sb-int:with-float-traps-masked
+  (:invalid :inexact :overflow)
+  (main *posix-argv*))
