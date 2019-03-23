@@ -23,8 +23,8 @@
 (defvar bsize 15)
 (defvar xn 0)
 (defvar yn 0)
-(defvar v 0)
-(defvar p 0)
+(defvar v 20)
+(defvar p 1)
 
 (load "parse_input.lisp")
 (load "gol_algo.lisp")
