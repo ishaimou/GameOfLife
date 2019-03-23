@@ -90,6 +90,48 @@
       (if (= p 1) (decf p) (incf p)))
   (print-matrix matrix row column bsize))
 
+(defun mouse-event-handler ()
+  (if (sdl:mouse-left-p)
+      (progn
+        (if (or (sdl:key-down-p :sdl-key-lctrl)
+                (sdl:key-down-p :sdl-key-rctrl))
+            (progn
+              (if (and (eq last-x 0)
+                       (eq last-y 0))
+                  (progn
+                    (setf last-x (sdl:mouse-x))
+                    (setf last-y (sdl:mouse-y)))
+                (progn
+                  (let*
+                      ((x (sdl:mouse-x))
+                       (y (sdl:mouse-y)))
+                    (setf xn (+ xn (- x last-x)))
+                    (setf yn (+ yn (- y last-y)))
+                    (setf last-x x)
+                    (setf last-y y)))))
+          (let ((i (floor (- (sdl:mouse-x) xn)
+                               bsize))
+                 (j (floor (- (sdl:mouse-y) yn)
+                               bsize)))
+            (if (equal (and (>= i 0)
+                           (< i row)
+                           (>= j 0)
+                           (< j column)) T)
+              (setf (aref matrix i j) 1))))))
+  (if (sdl:mouse-right-p)
+      (let
+          ((i (floor (- (sdl:mouse-x) xn)
+                         bsize))
+           (j (floor (- (sdl:mouse-y) yn)
+                         bsize)))
+        (if (equal (and (>= i 0)
+                       (< i row)     ; Global y
+                       (>= j 0)
+                       (< j column)) t) ; Global x
+          (setf (aref matrix i j)
+                0))))
+  (print-matrix matrix column row bsize))
+
 (defun gol-launcher ()
   (sdl:with-init ()
                  (sdl:window width height
@@ -114,7 +156,8 @@
                                    ;(print-box (sdl:mouse-x) (sdl:mouse-y) bsize *white*))
                                    ;; Redraw the display
                                    ;(sdl:update-display)
-                                   (print-matrix matrix row column bsize)
+                                   (mouse-event-handler)
+                                   ;(print-matrix matrix row column bsize)
                                    (if (eq p 0)
                                        (progn
                                          (setf curr-time (get-internal-run-time))

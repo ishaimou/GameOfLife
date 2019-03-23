@@ -22,6 +22,8 @@
 
 (defvar curr-time 0)
 (defvar last-time 0)
+(defvar last-x 0)
+(defvar last-y 0)
 (defvar bsize 15)
 (defvar xn 0)
 (defvar yn 0)
