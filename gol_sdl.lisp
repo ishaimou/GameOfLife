@@ -22,12 +22,12 @@
   (sdl:update-display))
 
 (defun zoom-in ()
- (if (< bsize *max-zoom*)
-     (progn
-       (setf bsize (+ bsize *zoom*))
-       (setf xn (- xn 50))
-       (setf yn (- yn 50))
-       )))
+  (if (< bsize *max-zoom*)
+      (progn
+        (setf bsize (+ bsize *zoom*))
+        (setf xn (- xn 50))
+        (setf yn (- yn 50))
+        )))
 
 (defun zoom-out ()
   (if (> bsize *min-zoom*)
@@ -38,13 +38,13 @@
         )))
 
 (defun move-forward-x ()
-   (setf xn (+ xn *step*)))
+  (setf xn (+ xn *step*)))
 
 (defun move-backward-x ()
   (setf xn (- xn *step*)))
 
 (defun move-forward-y ()
-   (setf yn (+ yn *step*)))
+  (setf yn (+ yn *step*)))
 
 (defun move-backward-y ()
   (setf yn (- yn *step*)))
@@ -54,10 +54,10 @@
 
 (defun calculate-v (bool)
   (if (equal bool 'nil)
-      (if (> v 5)
-            (setf v (- v *speed*)))
-      (if (< v 50)
-            (setf v (+ v *speed*)))))
+      (if (>= v 20)
+          (setf v (- v *speed*)))
+      (if (<= v 100)
+          (setf v (+ v *speed*)))))
 
 (defun handle-key-event (key)
   (if (sdl:key= key :sdl-key-escape)
@@ -83,7 +83,9 @@
       ;(format t "~%v= ~d~%" v)
       )
   (if (sdl:key= key :sdl-key-r)
-      (reset-matrix))
+      (progn
+         (reset-matrix)
+         (setf p 1)))
   (if (sdl:key= key :sdl-key-p)
       (if (= p 1) (decf p) (incf p)))
   (print-matrix matrix row column bsize))
@@ -104,18 +106,21 @@
                                    (sdl:update-display))
                                   (:key-down-event (:key key)
                                    (handle-key-event key))
-                                   ;(when (sdl:key-down-p :sdl-key-escape)
-                                   ;  (sdl:push-quit-event)))
+                                  ;(when (sdl:key-down-p :sdl-key-escape)
+                                  ;  (sdl:push-quit-event)))
                                   (:idle ()
-                                   ;(sdl:clear-display (sdl:color))
-                                   ;(sdl:draw-box (sdl:rectangle :x 200 :y 250 :w 15 :h 15) :color sdl:*white*)
-                                   (when (sdl:mouse-left-p)
-                                     ;; Draw the box having a center at the mouse x/y coordinates
-                                     (print-box (sdl:mouse-x) (sdl:mouse-y) bsize *white*))
+                                   ;(when (sdl:mouse-left-p)
+                                   ;; Draw the box having a center at the mouse x/y coordinates
+                                   ;(print-box (sdl:mouse-x) (sdl:mouse-y) bsize *white*))
                                    ;; Redraw the display
                                    ;(sdl:update-display)
-                                   ;(print (sdl:key-repeat-delay))
-                                   ;(print (sdl:key-repeat-interval))
                                    (print-matrix matrix row column bsize)
-                                   (gol-algo)
+                                   (if (eq p 0)
+                                       (progn
+                                         (setf curr-time (get-internal-run-time))
+                                         (let ((time-wait (- last-time (- curr-time v))))
+                                           (if (> time-wait 0)
+                                               (sleep (/ time-wait 100))))
+                                         (gol-algo)
+                                         (setf last-time curr-time)))
                                    ))))

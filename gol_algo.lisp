@@ -1,15 +1,4 @@
 (setq matrix (make-array (list row column) :initial-element 0))
-#|
-(setq matrix #2A(
- (0 0 0 0 0 0 0 0)
- (0 0 0 1 0 0 0 0)
- (0 0 0 0 1 0 0 0)
- (0 0 1 1 1 0 0 0)
- (0 0 0 0 0 0 0 0)
- (0 0 0 0 0 0 0 0)
- (0 0 0 0 0 0 0 0)
- (0 0 0 0 0 0 0 0)))
-|#
 (setq density (make-array (list row column) :initial-element 0))
 
 (defun random-matrix ()
@@ -67,9 +56,3 @@
  (progn
    (setq density (calculate-density))
    (setq matrix (update-matrix))))
-#|
-(dotimes (x 20)
-    (print matrix)
-    (format t "Generation ~d~%" (1+ x))
-    (gol-algo))
-|#

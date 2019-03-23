@@ -3,8 +3,8 @@
 
 (defparameter width 1000)
 (defparameter height 1000)
-(defparameter row 200)
-(defparameter column 200)
+(defparameter row 1000)
+(defparameter column 1000)
 (defparameter matrix nil)
 (defparameter density nil)
 (defparameter nb 0)
@@ -20,6 +20,8 @@
 (defparameter *gray* (sdl:color :r 128 :g 128 :b 128))
 (defparameter *red* (sdl:color :r 255 :g 160 :b 122))
 
+(defvar curr-time 0)
+(defvar last-time 0)
 (defvar bsize 15)
 (defvar xn 0)
 (defvar yn 0)
