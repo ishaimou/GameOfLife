@@ -178,5 +178,4 @@
                                   (:idle ()
                                    (mouse-event-handler)
                                    (handle-pv p v)
-                                  ;(format t "~%p=~d~%v=~d~%" p v)
                                    ))))

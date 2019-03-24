@@ -34,14 +34,13 @@
 (defvar v 20)
 (defvar p 1)
 
-(load "parse_input.lisp")
-(load "gol_algo.lisp")
-(load "gol_sdl.lisp")
+(load "src/parse_input.lisp")
+(load "src/gol_algo.lisp")
+(load "src/gol_sdl.lisp")
 
 
 (defun main (av)
   (parse-input av)
-  (format t "~%random = ~d~%" *random*)
   (when (equal *random* 1) (setq matrix (random-matrix)))
   (gol-launcher)
   (sb-ext:exit)
