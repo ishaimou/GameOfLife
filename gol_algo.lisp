@@ -1,6 +1,3 @@
-(setq matrix (make-array (list row column) :initial-element 0))
-(setq density (make-array (list row column) :initial-element 0))
-
 (defun random-matrix ()
   (dotimes (i row)
     (dotimes (j column)
@@ -50,7 +47,6 @@
       (if (rule4 i j) (setf (aref matrix i j) 1))))
   matrix)
 
-(when (equal *random* 1) (setq matrix (random-matrix)))
 
 (defun gol-algo ()
  (progn

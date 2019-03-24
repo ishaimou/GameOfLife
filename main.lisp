@@ -21,6 +21,9 @@
 (defparameter *gray* (sdl:color :r 128 :g 128 :b 128))
 (defparameter *red* (sdl:color :r 255 :g 160 :b 122))
 
+(setq matrix (make-array (list row column) :initial-element 0))
+(setq density (make-array (list row column) :initial-element 0))
+
 (defvar curr-time 0)
 (defvar last-time 0)
 (defvar last-x 0)
@@ -38,11 +41,8 @@
 
 (defun main (av)
   (parse-input av)
-  ;(format t "~%random = ~d~%" *random*)
-  ;(format t "~%toggle = ~d~%" *toggle*)
-  ;(format t "~%fingerprint = ~d~%" *fingerprint*)
-  ;(format t "~%row = ~d~%" row)
-  ;(format t "~%column= ~d~%" column)
+  (format t "~%random = ~d~%" *random*)
+  (when (equal *random* 1) (setq matrix (random-matrix)))
   (gol-launcher)
   (sb-ext:exit)
   )
