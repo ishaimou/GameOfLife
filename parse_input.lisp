@@ -4,7 +4,7 @@
                        (string-equal "--help" arg)) t))
           (NOT (< 2 (length av)))) 
           (progn
-            (format t "usage: sbcl --load main.lisp <width> <height> [-h --help -t --toggle -f --fingerprint]
+            (format t "usage: sbcl --load main.lisp <width> <height> [-h --help -r --random -t --toggle -f --fingerprint]
 
 positional arguments:
 
@@ -18,6 +18,10 @@ optional arguments:
       )
   (setq column (parse-integer (nth 1 av)))
   (setq row (parse-integer (nth 2 av)))
+  (loop for arg in av
+      do (if (OR (string-equal "-r" arg)
+               (string-equal "--random" arg))
+            (setq *random* 1)))
   (loop for arg in av
       do (if (OR (string-equal "-t" arg)
                (string-equal "--toggle" arg))

@@ -50,7 +50,7 @@
       (if (rule4 i j) (setf (aref matrix i j) 1))))
   matrix)
 
-(setq matrix (random-matrix))
+(when (equal *random* 1) (setq matrix (random-matrix)))
 
 (defun gol-algo ()
  (progn

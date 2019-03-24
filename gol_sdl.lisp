@@ -54,10 +54,10 @@
 
 (defun calculate-v (bool)
   (if (equal bool 'true)
-      (if (>= v 20)
-          (setf v (+ v *speed*)))
-      (if (<= v 100)
-          (setf v (- v *speed*)))))
+      (if (> v 5)
+          (setf v (- v *speed*)))
+      (if (<= v 200)
+          (setf v (+ v *speed*)))))
 
 (defun handle-key-event (key)
   (if (sdl:key= key :sdl-key-escape)
@@ -75,13 +75,9 @@
   (if (OR (sdl:key= key :sdl-key-z) (sdl:key= key :sdl-key-kp-plus))
       (zoom-in))
   (if (OR (sdl:key= key :sdl-key-v) (sdl:key= key :sdl-key-greater))
-      (calculate-v 'true)
-      ;(format t "~%v= ~d~%" v)
-      )
+      (calculate-v 'true))
   (if (OR (sdl:key= key :sdl-key-c) (sdl:key= key :sdl-key-less))
-      (calculate-v 'nil)
-      ;(format t "~%v= ~d~%" v)
-      )
+      (calculate-v 'nil))
   (if (sdl:key= key :sdl-key-r)
       (progn
         (reset-matrix)
@@ -91,15 +87,15 @@
   (print-matrix matrix row column bsize))
 
 (defun handle-mouse-event (button)
-  (if (= button 4) ; When down
+  (if (= button 4)
       (if (or (sdl:key-down-p :sdl-key-lshift)
               (sdl:key-down-p :sdl-key-rshift))
-          (calculate-v 'nil) ; shifted
+          (calculate-v 'nil)
           (zoom-out)))
-  (if (= button 5) ; When up
+  (if (= button 5)
       (if (or (sdl:key-down-p :sdl-key-lshift)
               (sdl:key-down-p :sdl-key-rshift))
-          (calculate-v 'true) ; shifted
+          (calculate-v 'true)
           (zoom-in)))
   (if (= button 1)
       (progn
@@ -142,17 +138,29 @@
          (j (floor (- (sdl:mouse-y) yn)
                    bsize)))
         (if (equal (and (>= i 0)
-                        (< i row)     ; Global y
+                        (< i row)
                         (>= j 0)
-                        (< j column)) t) ; Global x
+                        (< j column)) t)
             (setf (aref matrix i j)
                   0))))
   (print-matrix matrix column row bsize))
 
+(defun handle-pv (pause v)
+  (if (eq pause 0)
+      (progn
+        (setf curr-time (get-internal-run-time))
+        (let ((time-wait (- last-time (- curr-time v))))
+          (if (> time-wait 0)
+              (sleep (/ time-wait 100))))
+        (gol-algo)
+        (setf last-time curr-time))))
+
 (defun gol-launcher ()
   (sdl:with-init ()
                  (sdl:window width height
+                             ; Screen resizable mode
                              :resizable t
+                             ; Enable double buffer mode
                              :double-buffer t
                              :title-caption "Carnifex: Game Of Life")
                  (setf (sdl:frame-rate) 60)
@@ -167,22 +175,8 @@
                                    (handle-mouse-event button))
                                   (:key-down-event (:key key)
                                    (handle-key-event key))
-                                  ;(when (sdl:key-down-p :sdl-key-escape)
-                                  ;  (sdl:push-quit-event)))
                                   (:idle ()
-                                   ;(when (sdl:mouse-left-p)
-                                   ;; Draw the box having a center at the mouse x/y coordinates
-                                   ;(print-box (sdl:mouse-x) (sdl:mouse-y) bsize *white*))
-                                   ;; Redraw the display
-                                   ;(sdl:update-display)
                                    (mouse-event-handler)
-                                   ;(print-matrix matrix row column bsize)
-                                   (if (eq p 0)
-                                       (progn
-                                         (setf curr-time (get-internal-run-time))
-                                         (let ((time-wait (- last-time (- curr-time v))))
-                                           (if (> time-wait 0)
-                                               (sleep (/ time-wait 100))))
-                                         (gol-algo)
-                                         (setf last-time curr-time)))
+                                   (handle-pv p v)
+                                   ;(format t "~%p=~d~%v=~d~%" p v)
                                    ))))

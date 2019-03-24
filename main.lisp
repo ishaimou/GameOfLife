@@ -8,6 +8,7 @@
 (defparameter matrix nil)
 (defparameter density nil)
 (defparameter nb 0)
+(defparameter *random* 0)
 (defparameter *toggle* 0)
 (defparameter *fingerprint* 0)
 (defparameter *step* 10)
@@ -37,6 +38,7 @@
 
 (defun main (av)
   (parse-input av)
+  ;(format t "~%random = ~d~%" *random*)
   ;(format t "~%toggle = ~d~%" *toggle*)
   ;(format t "~%fingerprint = ~d~%" *fingerprint*)
   ;(format t "~%row = ~d~%" row)
